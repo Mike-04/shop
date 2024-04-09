@@ -9,10 +9,12 @@
 #pragma once
 #include "domain.h"
 #include <vector>
+#include "list.h"
 
 class Repository {
 private:
     vector<Product> products;
+    List<Product> products_list;
 public:
     Repository();
     void addProduct(const Product& p);
