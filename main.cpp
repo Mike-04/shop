@@ -14,12 +14,14 @@ int main() {
     cout<<"Tests passed\n";
     Repository repo = Repository();
     //add some products
-    repo.addProduct(Product(1, "Laptop", "Electronics", 2000, "Asus"));
-    repo.addProduct(Product(2, "PC", "Electronics", 3000, "Dell"));
-    repo.addProduct(Product(3, "Phone", "Electronics", 1000, "Samsung"));
-    repo.addProduct(Product(4, "Tablet", "Electronics", 1500, "Apple"));
-    repo.addProduct(Product(5, "Smartwatch", "Electronics", 500, "Xiaomi"));
-    repo.addProduct(Product(6, "Headphones", "Electronics", 100, "Sony"));
+
+    Product p1,p2,p3,p4,p5,p6;
+    repo.addProduct(p1=Product(1, "Laptop", "Electronics", 2000, "Asus"));
+    repo.addProduct(p2=Product(2, "PC", "Electronics", 3000, "Dell"));
+    repo.addProduct(p3=Product(3, "Phone", "Electronics", 1000, "Samsung"));
+    repo.addProduct(p4=Product(4, "Tablet", "Electronics", 1500, "Apple"));
+    repo.addProduct(p5=Product(5, "Smartwatch", "Electronics", 500, "Xiaomi"));
+    repo.addProduct(p6=Product(6, "Headphones", "Electronics", 100, "Sony"));
     Service service = Service(repo);
 
     UI ui = UI(service);

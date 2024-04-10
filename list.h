@@ -1,3 +1,4 @@
+#pragma once
 template <typename TElem>
 class List{
 
@@ -24,6 +25,8 @@ public:
     TElem remove(int i);
     //equal operator overloading
     List& operator=(const List& other);
+    //cpoy constructor
+    List(const List& other);
 
     ~List();
 };
@@ -107,4 +110,13 @@ List<TElem>& List<TElem>::operator=(const List<TElem>& other) {
     for (int i = 0; i < size; i++)
         elems[i] = other.elems[i];
     return *this;
+}
+
+template <typename TElem>
+List<TElem>::List(const List<TElem>& other) {
+    elems = new TElem[other.max_size];
+    size = other.size;
+    max_size = other.max_size;
+    for (int i = 0; i < size; i++)
+        elems[i] = other.elems[i];
 }

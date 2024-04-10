@@ -4,7 +4,7 @@
 
 #include "ui.h"
 #include <iostream>
-
+#include "utils.h"
 UI::UI() {
     this->service = Service();
 }
@@ -18,8 +18,7 @@ void UI::run() {
         printMenu();
         int command;
         cout << "Enter command: ";
-        cin >> command;
-        cin.ignore();
+        command = readInt();
         if (command == 0) {
             break;
         }
@@ -37,7 +36,10 @@ void UI::run() {
                 printProducts();
                 break;
             case 5:
-                printProductById();
+                filterProducts();
+                break;
+            case 6:
+                sortProducts();
                 break;
             default:
                 cout << "Invalid command!" << endl;
@@ -51,6 +53,8 @@ void UI::printMenu() {
     cout << "2. Remove product" << endl;
     cout << "3. Update product" << endl;
     cout << "4. Print products" << endl;
+    cout << "5. Filter products" << endl;
+    cout << "6. Sort products" << endl;
     cout << "0. Exit" << endl;
 }
 
@@ -60,22 +64,20 @@ void UI::addProduct() {
     double price;
     string producer;
     cout << "Enter name: ";
-    getline(cin, name);
+    name=readString();
     cout << "Enter type: ";
-    getline(cin, type);
+    type=readString();
     cout << "Enter price: ";
-    cin >> price;
-    cin.ignore();
+    price = readDouble();
     cout << "Enter producer: ";
-    getline(cin, producer);
+    producer=readString();
     this->service.addProduct(name, type, price, producer);
 }
 
 void UI::removeProduct() {
     int id;
     cout << "Enter id: ";
-    cin >> id;
-    cin.ignore();
+    id=readInt();
     this->service.removeProduct(id);
 }
 
@@ -86,33 +88,69 @@ void UI::updateProduct() {
     double price;
     string producer;
     cout << "Enter id: ";
-    cin >> id;
+    id=readInt();
     cin.ignore();
     cout << "Enter name: ";
-    getline(cin, name);
+    name=readString();
     cout << "Enter type: ";
-    getline(cin, type);
+    type=readString();
     cout << "Enter price: ";
-    cin >> price;
-    cin.ignore();
+    price = readDouble();
     cout << "Enter producer: ";
-    getline(cin, producer);
+    producer=readString();
     this->service.updateProduct(id, name, type, price, producer);
 }
 
 void UI::printProducts() {
-    cout<< "UI printproducts" << endl;
-    vector<Product>* products = this->service.getProducts();
-    for (auto & product : *products) {
-        cout << product.toString() << endl;
+    cout<< "UI print products" << endl;
+    List<Product>* products = this->service.getProducts();
+    for (int i = 0; i < products->getSize(); i++) {
+        cout << products->element(i).toString() << endl;
     }
 }
 
-void UI::printProductById() {
-    int id;
-    cout << "Enter id: ";
-    cin >> id;
-    cin.ignore();
-    Product product = this->service.getProductById(id);
-    cout << product.toString() << endl;
+void UI::filterProducts() {
+    int minPrice,maxPrice;
+    string name, type;
+    cout << "Enter name(or leave blank): ";
+    name=readString();
+    cout << "Enter type(or leave blank): ";
+    type=readString();
+    cout << "Enter min price(or leave blank): ";
+    string minPriceString=readString();
+    if (minPriceString.empty()) {
+        minPrice = -1;
+    } else {
+        minPrice = stoi(minPriceString);
+    }
+    cout << "Enter max price(or leave blank): ";
+    string maxPriceString=readString();
+    if (maxPriceString.empty()) {
+        maxPrice = 999999999;
+    } else {
+        maxPrice = stoi(maxPriceString);
+    }
+    List<Product> filteredProducts;
+    this->service.filterProducts(&filteredProducts,name, type, minPrice, maxPrice);
+    for (int i = 0; i < filteredProducts.getSize(); i++) {
+        cout << filteredProducts.element(i).toString() << endl;
+    }
+
+
+}
+
+void UI::sortProducts() {
+    cout << "Sort products by:" << endl;
+    cout << "1. Name" << endl;
+    cout << "2. Price" << endl;
+    cout << "3. Name+Type" << endl;
+    int command;
+    cout << "Enter command: ";
+    command= readInt();
+    List<Product> sortedproducts=*this->service.getProducts();
+    this->service.sortProducts(&sortedproducts, command);
+    for (int i = 0; i < sortedproducts.getSize(); i++) {
+        cout << sortedproducts.element(i).toString() << endl;
+    }
+
 }

@@ -125,8 +125,6 @@ void test_domain() {
     p1.setProducer("Dell");
     assert(p1.getProducer() == "Dell");
 
-
-    cout << p1.toString() << endl;
     assert(p1.toString() == "2, PC, Electronics, 3000.00, Dell");
 }
 
@@ -136,19 +134,20 @@ void test_repo() {
     Product p2 = Product(2, "PC", "Electronics", 3000, "Dell");
 
     repo.addProduct(p1);
+    assert(repo.getProducts()->getSize() == 1);
     repo.addProduct(p2);
-
-    assert(repo.getProducts()->size() == 2);
+    assert(repo.getProducts()->getSize() == 2);
 
     repo.removeProduct(1);
-    assert(repo.getProducts()->size() == 1);
+    assert(repo.getSize() == 1);
 
     assert(repo.getProductById(2).getName() == "PC");
     assert(repo.getProductById(3).getName().empty());
 
+    Product p3 = Product(2, "PC", "Electronics", 4000, "Dell");
 
-    repo.updateProduct(2 , Product(2, "PC", "Electronics", 4000, "Dell"));
-    assert(repo.getProducts()->at(0).getPrice() == 4000);
+    repo.updateProduct(2 , p3);
+    assert(repo.getProducts()->element(0).getPrice() == 4000);
 }
 
 void test_service() {
@@ -169,8 +168,8 @@ void test_service() {
     assert(service.getProductById(2).getPrice() == 4000);
 
     //test get products
-    vector<Product>* products = service.getProducts();
-    assert(products->size() == 1);
+    List<Product>* products = service.getProducts();
+    assert(products->getSize() == 1);
 
     //test service with empty repo
     Service service2;
@@ -188,6 +187,46 @@ void test_service() {
     service2.updateProduct(2, "PC", "Electronics", 4000, "Dell");
     assert(service2.getProductById(2).getPrice() == 4000);
 
+
+    //test filter
+    Service service3;
+    service3.addProduct("Phone", "Gadget", 1000, "Samsung");
+    service3.addProduct("Laptop", "Electronics", 2000, "Asus");
+    service3.addProduct("PC", "Electronics", 3000, "Dell");
+
+
+    List<Product> filtered;
+    service3.filterProducts(&filtered,"", "Elec", 0, 2000);
+    assert(filtered.getSize() == 1);
+
+    //test sort
+    List<Product> sorted=*service3.getProducts();
+    service3.sortProducts(&sorted, 1);
+    assert(sorted.element(0).getName() == "Laptop");
+    assert(sorted.element(1).getName() == "PC");
+    assert(sorted.element(2).getName() == "Phone");
+
+    sorted=*service3.getProducts();
+    service3.sortProducts(&sorted, 2);
+    assert(sorted.element(0).getName() == "Phone");
+    assert(sorted.element(1).getName() == "Laptop");
+    assert(sorted.element(2).getName() == "PC");
+
+
+    service3.addProduct("PC", "Gadget", 3000, "Dell");
+
+    sorted=*service3.getProducts();
+    service3.sortProducts(&sorted, 3);
+    assert(sorted.element(0).getName() == "Laptop");
+    assert(sorted.element(1).getName() == "PC");
+    assert(sorted.element(2).getName() == "PC");
+    assert(sorted.element(3).getName() == "Phone");
+
+
+
+
+
+
 }
 
 void test_all() {
@@ -195,5 +234,4 @@ void test_all() {
     test_domain();
     test_repo();
     test_service();
-    std::cout << "All tests passed!\n";
 }

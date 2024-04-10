@@ -17,10 +17,11 @@ private:
     List<Product> products_list;
 public:
     Repository();
-    void addProduct(const Product& p);
+    void addProduct(Product &p);
     void removeProduct(int id);
-    void updateProduct(int id, const Product& p);
-    vector<Product>* getProducts();
+    void updateProduct(int id, Product &p);
+    List<Product>* getProducts();
     Product getProductById(int id);
     unsigned long getSize();
+    ~Repository();
 };

@@ -22,5 +22,6 @@ public:
     void removeProduct();
     void updateProduct();
     void printProducts();
-    void printProductById();
+    void filterProducts();
+    void sortProducts();
 };

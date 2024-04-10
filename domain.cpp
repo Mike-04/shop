@@ -93,7 +93,7 @@ void Product::setProducer(const string &producer) {
 //Input: a Product object
 //Output: A Product object with the same values as the given object
 Product::Product(Product const &p) : id(p.id), type(p.type), price(p.price), producer(p.producer), name(p.name) {
-    cout<< "Copy constructor called" << endl;
+    //cout<< "Copy constructor called" << endl;
 }
 
 //Description: This function returns a string representation of the product
@@ -103,4 +103,32 @@ string Product::toString() {
     char new_price[100];
     sprintf(new_price, "%.2f", this->price);
     return to_string(this->id) + ", " + this->name + ", " + this->type + ", " + new_price + ", " + this->producer;
+}
+
+//Description: Overloaded assignment operator for the Product class
+//Input: a Product object
+//Output: a Product object with the same values as the given object
+Product& Product::operator=(Product const &p) {
+    this->id = p.id;
+    this->name = p.name;
+    this->type = p.type;
+    this->price = p.price;
+    this->producer = p.producer;
+    return *this;
+}
+
+//Description: Destructor for the Product class
+//Input: -
+//Output: -
+Product::~Product() {
+}
+
+//Description: This function validates the product
+//Input: -
+//Output: a boolean value, true if the product is valid, false otherwise
+bool Product::validate() {
+    if (this->name.empty() || this->type.empty() || this->producer.empty() || this->price < 0) {
+        return false;
+    }
+    return true;
 }
