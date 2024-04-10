@@ -79,5 +79,17 @@ Repository::~Repository() {
     //delete this->products;
 }
 
+//Description: This function returns the position of a product in the list
+//Input: a Product object
+//Output: an integer representing the position of the product in the list
+int Repository::getPosition(Product &p) {
+    for(int i=0;i<this->products_list.getSize();i++){
+        if(products_list.element(i)==p){
+            return i;
+        }
+    }
+    return -1;
+}
+
 
 

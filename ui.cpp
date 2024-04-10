@@ -14,37 +14,42 @@ UI::UI(Service service) {
 }
 
 void UI::run() {
-    while (true) {
-        printMenu();
-        int command;
-        cout << "Enter command: ";
-        command = readInt();
-        if (command == 0) {
-            break;
+    try {
+        while (true) {
+            printMenu();
+            int command;
+            cout << "Enter command: ";
+            command = readInt();
+            if (command == 0) {
+                break;
+            }
+            switch (command) {
+                case 1:
+                    addProduct();
+                    break;
+                case 2:
+                    removeProduct();
+                    break;
+                case 3:
+                    updateProduct();
+                    break;
+                case 4:
+                    printProducts();
+                    break;
+                case 5:
+                    filterProducts();
+                    break;
+                case 6:
+                    sortProducts();
+                    break;
+                default:
+                    cout << "Invalid command!" << endl;
+                    break;
+            }
         }
-        switch (command) {
-            case 1:
-                addProduct();
-                break;
-            case 2:
-                removeProduct();
-                break;
-            case 3:
-                updateProduct();
-                break;
-            case 4:
-                printProducts();
-                break;
-            case 5:
-                filterProducts();
-                break;
-            case 6:
-                sortProducts();
-                break;
-            default:
-                cout << "Invalid command!" << endl;
-                break;
-        }
+    }
+    catch (exception& e) {
+        cout << e.what();
     }
 }
 
@@ -71,7 +76,11 @@ void UI::addProduct() {
     price = readDouble();
     cout << "Enter producer: ";
     producer=readString();
-    this->service.addProduct(name, type, price, producer);
+    try {
+        this->service.addProduct(name, type, price, producer);
+    } catch (exception& e) {
+        cout << e.what();
+    }
 }
 
 void UI::removeProduct() {
@@ -98,7 +107,11 @@ void UI::updateProduct() {
     price = readDouble();
     cout << "Enter producer: ";
     producer=readString();
-    this->service.updateProduct(id, name, type, price, producer);
+    try {
+        this->service.updateProduct(id,name, type, price, producer);
+    } catch (exception& e) {
+        cout << e.what();
+    }
 }
 
 void UI::printProducts() {

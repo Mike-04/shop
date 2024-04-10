@@ -126,6 +126,22 @@ void test_domain() {
     assert(p1.getProducer() == "Dell");
 
     assert(p1.toString() == "2, PC, Electronics, 3000.00, Dell");
+
+    //test operator=
+    Product p2 = Product(3, "Phone", "Electronics", 1000, "Samsung");
+
+    //test operator==
+    assert(p1 == p1);
+    assert(!(p1 == p2));
+
+    //test validate
+    try {
+        Product p3 = Product(4, "Phone", "Electronics", -1000, "Samsung");
+        p3.validate();
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
 }
 
 void test_repo() {
@@ -148,6 +164,9 @@ void test_repo() {
 
     repo.updateProduct(2 , p3);
     assert(repo.getProducts()->element(0).getPrice() == 4000);
+
+    //test get position
+    assert(repo.getPosition(p3) == 0);
 }
 
 void test_service() {
@@ -158,6 +177,22 @@ void test_service() {
     service.addProduct("Laptop", "Electronics", 2000, "Asus");
     service.addProduct("PC", "Electronics", 3000, "Dell");
 
+    //try adding a product that already exists
+    try {
+        service.addProduct("PC", "Electronics", 3000, "Dell");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+    //try adding a product with negative price
+    try {
+        service.addProduct("Phone", "Electronics", -1000, "Samsung");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
     assert(service.getSize() == 2);
 
     service.removeProduct(1);
@@ -165,6 +200,23 @@ void test_service() {
     assert(service.getSize() == 1);
 
     service.updateProduct(2, "PC", "Electronics", 4000, "Dell");
+
+    //try updating a product that already exists
+    try {
+        service.updateProduct(2, "PC", "Electronics", 4000, "Dell");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+    //try updating a product with negative price
+    try {
+        service.updateProduct(2, "PC", "Electronics", -4000, "Dell");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
     assert(service.getProductById(2).getPrice() == 4000);
 
     //test get products
@@ -186,6 +238,10 @@ void test_service() {
 
     service2.updateProduct(2, "PC", "Electronics", 4000, "Dell");
     assert(service2.getProductById(2).getPrice() == 4000);
+
+    //test get position
+    Product p1 = Product(2, "PC", "Electronics", 4000, "Dell");
+    assert(service2.getPosition(p1) == 0);
 
 
     //test filter

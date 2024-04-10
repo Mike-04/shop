@@ -21,6 +21,7 @@ public:
     List<Product>* getProducts();
     Product getProductById(int id);
     unsigned long getSize();
+    int getPosition(Product &p);
     void filterProducts(List<Product>* filteredProducts,string name, string type,int minPrice,int maxPrice);
     void sortProducts(List<Product>* sortedProducts,int command);
     int generateId();

@@ -22,6 +22,7 @@ public:
     void updateProduct(int id, Product &p);
     List<Product>* getProducts();
     Product getProductById(int id);
+    int getPosition(Product &p);
     unsigned long getSize();
     ~Repository();
 };

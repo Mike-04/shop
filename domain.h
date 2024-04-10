@@ -37,6 +37,7 @@ public:
     void setProducer(string const &producer);
     string toString();
     Product& operator=(Product const &p);
-    bool validate();
+    bool operator==(Product const &p);
+    void validate();
     ~Product();
 };

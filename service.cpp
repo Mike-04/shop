@@ -40,10 +40,11 @@ for (int i = 0; i < products->getSize(); i++) {
 void Service::addProduct(string name, string type, double price, string producer) {
     //cout<<"Service addProduct";
     Product p = Product(generateId(), name, type, price, producer);
-    if(p.validate())
+    p.validate();
+    if(this->getPosition(p)!=-1)
+        throw std::invalid_argument("Product already exists\n");
     this->repo.addProduct(p);
-    else
-        std::cout<<"Invalid product";
+
 }
 
 //Description: This function removes a product from the list
@@ -58,10 +59,10 @@ void Service::removeProduct(int id) {
 //Output: -
 void Service::updateProduct(int id, string name, string type, double price, string producer) {
     Product p = Product(id, name, type, price, producer);
-    if(p.validate())
+    p.validate();
+    if(this->getPosition(p)!=-1)
+        throw std::invalid_argument("Product already exists\n");
     this->repo.updateProduct(id, p);
-    else
-        std::cout<<"Invalid product";
 }
 
 //Description: This function returns the list of products
@@ -141,8 +142,13 @@ void Service::sortProducts(List<Product>* sortedProducts,int command) {
     } else if (command == 3) {
         sort_prod(sortedProducts, compareNameType);
     }
+}
 
-
+//Description: This function returns the position of a product in the list
+//Input: a product object
+//Output: an integer representing the position of the product in the list
+int Service::getPosition(Product &p) {
+    return this->repo.getPosition(p);
 }
 
 

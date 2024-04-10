@@ -5,7 +5,7 @@
 #include "domain.h"
 #include <iostream>
 #include <utility>
-
+#include <exception>
 //Description: Default constructor for the Product class
 //Input: -
 //Output: A Product object with default values
@@ -117,6 +117,13 @@ Product& Product::operator=(Product const &p) {
     return *this;
 }
 
+//Description: Overloaded equality operator for the Product class
+//Input: a Product object
+//Output: a boolean value, true if the products are equal, false otherwise
+bool Product::operator==(Product const &p) {
+    return this->name == p.name && this->type == p.type && this->price == p.price && this->producer == p.producer;
+}
+
 //Description: Destructor for the Product class
 //Input: -
 //Output: -
@@ -126,9 +133,8 @@ Product::~Product() {
 //Description: This function validates the product
 //Input: -
 //Output: a boolean value, true if the product is valid, false otherwise
-bool Product::validate() {
+void Product::validate() {
     if (this->name.empty() || this->type.empty() || this->producer.empty() || this->price < 0) {
-        return false;
+    throw std::invalid_argument("Invalid product!\n");
     }
-    return true;
 }
