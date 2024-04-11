@@ -10,4 +10,5 @@
 void test_domain();
 void test_repo();
 void test_service();
+void test_list();
 void test_all();
