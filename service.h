@@ -8,6 +8,9 @@
 #endif //SHOP_SERVICE_H
 
 #include "repo.h"
+#include <random>
+#include <algorithm>
+#include <fstream>
 
 class Service {
 private:
@@ -25,4 +28,10 @@ public:
     void filterProducts(vector<Product>* filteredProducts,string name, string type,int minPrice,int maxPrice);
     static void sortProducts(vector<Product>* sortedProducts,int command);
     int generateId();
+    void addProductToBasket(int id);
+    vector<Product>* getBasket();
+    void emptyBasket();
+    void generateRandomBasket(int n);
+    void exportBasketToCSV(string filename);
+    void exportBasketToHTML(string filename);
 };

@@ -24,4 +24,10 @@ public:
     void printProducts();
     void filterProducts();
     void sortProducts();
+    void printBasket();
+    void addProductToBasket();
+    void emptyBasket();
+    void generateRandomBasket();
+    void exportBasketToCSV();
+    void exportBasketToHTML();
 };

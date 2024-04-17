@@ -25,7 +25,7 @@ int main() {
     Service service = Service(repo);
 
     UI ui = UI(service);
-    system("clear");
+    //system("clear");
     ui.run();
 
 

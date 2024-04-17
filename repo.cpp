@@ -103,6 +103,20 @@ void Repository::addProductToBasket(int id) {
     }
 }
 
+//Description: This function removes a product from the basket
+//Input: an integer representing the id of the product
+//Output: -
+void Repository::emptyBasket() {
+     this->basket.clear();
+}
+
+
+//Description: This function returns the basket
+//Input: -
+//Output: a vector of Product objects representing the basket
+vector<Product>* Repository::getBasketRepo() {
+    return &this->basket;
+}
 
 
 

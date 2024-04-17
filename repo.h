@@ -26,6 +26,6 @@ public:
     unsigned long getSize();
     ~Repository();
     void addProductToBasket(int id);
-    void removeProductFromBasket(int id);
-    vector<Product>* getBasket();
+    void emptyBasket();
+    vector<Product>* getBasketRepo();
 };

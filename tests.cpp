@@ -177,6 +177,10 @@ void test_service() {
     service.addProduct("Laptop", "Electronics", 2000, "Asus");
     service.addProduct("PC", "Electronics", 3000, "Dell");
 
+//    for (auto & product : *service.getProducts()) {
+//        cout<< product.toString() << endl;
+//    }
+
     //try adding a product that already exists
     try {
         service.addProduct("PC", "Electronics", 3000, "Dell");
@@ -197,9 +201,21 @@ void test_service() {
 
     service.removeProduct(1);
 
+    //try removing a product that does not exist
+    try {
+        service.removeProduct(1);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
     assert(service.getSize() == 1);
 
     service.updateProduct(2, "PC", "Electronics", 4000, "Dell");
+
+//    for (auto & product : *service.getProducts()) {
+//        cout<< product.toString() << endl;
+//    }
 
     //try updating a product that already exists
     try {
@@ -278,6 +294,29 @@ void test_service() {
     assert(sorted.at(2).getName() == "PC");
     assert(sorted.at(3).getName() == "Phone");
 
+    //test add product to basket
+    service3.addProductToBasket(1);
+    assert(service3.getBasket()->size() == 1);
+
+    //test empty basket
+    service3.emptyBasket();
+    assert(service3.getBasket()->size() == 0);
+
+
+    //test generate random basket
+    service3.generateRandomBasket(2);
+    assert(service3.getBasket()->size() == 2);
+
+    //test export basket to csv
+    service3.exportBasketToCSV("test.csv");
+
+    //test export basket to html
+    service3.exportBasketToHTML("test.html");
+
+    //test generate id
+    assert(service3.generateId() == 5);
+    service3.removeProduct(1);
+    assert(service3.generateId() == 1);
 
 
 
