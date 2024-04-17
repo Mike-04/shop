@@ -4,8 +4,6 @@
 
 #include "domain.h"
 #include <iostream>
-#include <utility>
-#include <exception>
 //Description: Default constructor for the Product class
 //Input: -
 //Output: A Product object with default values
@@ -127,8 +125,7 @@ bool Product::operator==(Product const &p) {
 //Description: Destructor for the Product class
 //Input: -
 //Output: -
-Product::~Product() {
-}
+Product::~Product() = default;
 
 //Description: This function validates the product
 //Input: -

@@ -13,16 +13,19 @@
 
 class Repository {
 private:
-    vector<Product> products;
-    List<Product> products_list;
+    vector<Product> products_list;
+    vector<Product> basket;
 public:
     Repository();
     void addProduct(Product &p);
     void removeProduct(int id);
     void updateProduct(int id, Product &p);
-    List<Product>* getProducts();
+    vector<Product>* getProducts();
     Product getProductById(int id);
     int getPosition(Product &p);
     unsigned long getSize();
     ~Repository();
+    void addProductToBasket(int id);
+    void removeProductFromBasket(int id);
+    vector<Product>* getBasket();
 };

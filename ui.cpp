@@ -5,14 +5,22 @@
 #include "ui.h"
 #include <iostream>
 #include "utils.h"
+//Description: Constructor for UI class
+//Input: -
+//Output: A UI object with default values
 UI::UI() {
     this->service = Service();
 }
 
+//Description: Constructor for UI class
+//Input: a Service object
+//Output: A UI object with the given values
 UI::UI(Service service) {
     this->service = service;
 }
-
+//Description: This function runs the user interface
+//Input: -
+//Output: -
 void UI::run() {
     try {
         while (true) {
@@ -53,6 +61,10 @@ void UI::run() {
     }
 }
 
+//Description: This function prints the menu
+//Input: -
+//Output: -
+
 void UI::printMenu() {
     cout << "1. Add product" << endl;
     cout << "2. Remove product" << endl;
@@ -63,6 +75,9 @@ void UI::printMenu() {
     cout << "0. Exit" << endl;
 }
 
+//Description: This function adds a product
+//Input: -
+//Output: -
 void UI::addProduct() {
     string name;
     string type;
@@ -83,13 +98,23 @@ void UI::addProduct() {
     }
 }
 
+//Description: This function removes a product
+//Input: -
+//Output: -
 void UI::removeProduct() {
     int id;
     cout << "Enter id: ";
     id=readInt();
-    this->service.removeProduct(id);
+    try {
+        this->service.removeProduct(id);
+    }
+    catch (exception& e) {
+        cout << e.what();
+    }
 }
-
+//Description: This function updates a product
+//Input: -
+//Output: -
 void UI::updateProduct() {
     int id;
     string name;
@@ -114,16 +139,23 @@ void UI::updateProduct() {
     }
 }
 
+//Description: This function prints the products
+//Input: -
+//Output: -
 void UI::printProducts() {
     cout<< "UI print products" << endl;
-    List<Product>* products = this->service.getProducts();
-    for (int i = 0; i < products->getSize(); i++) {
-        cout << products->element(i).toString() << endl;
+    vector<Product>* products = this->service.getProducts();
+    //use range based for
+    for (auto product : *products) {
+        cout << product.toString() << endl;
     }
 }
 
+//Description: This function filters the products
+//Input: -
+//Output: -
 void UI::filterProducts() {
-    int minPrice,maxPrice;
+    int minPrice = 0,maxPrice = 0;
     string name, type;
     cout << "Enter name(or leave blank): ";
     name=readString();
@@ -143,27 +175,30 @@ void UI::filterProducts() {
     } else {
         maxPrice = stoi(maxPriceString);
     }
-    List<Product> filteredProducts;
+    vector<Product> filteredProducts;
     this->service.filterProducts(&filteredProducts,name, type, minPrice, maxPrice);
-    for (int i = 0; i < filteredProducts.getSize(); i++) {
-        cout << filteredProducts.element(i).toString() << endl;
+    for (auto product : filteredProducts) {
+        cout << product.toString() << endl;
     }
 
 
 }
 
+//Description: This function sorts the products
+//Input: -
+//Output: -
 void UI::sortProducts() {
     cout << "Sort products by:" << endl;
     cout << "1. Name" << endl;
     cout << "2. Price" << endl;
     cout << "3. Name+Type" << endl;
-    int command;
+    int command = 0;
     cout << "Enter command: ";
     command= readInt();
-    List<Product> sortedproducts=*this->service.getProducts();
+    vector<Product> sortedproducts=*this->service.getProducts();
     this->service.sortProducts(&sortedproducts, command);
-    for (int i = 0; i < sortedproducts.getSize(); i++) {
-        cout << sortedproducts.element(i).toString() << endl;
+    for (auto product : sortedproducts) {
+        cout << product.toString() << endl;
     }
 
 }

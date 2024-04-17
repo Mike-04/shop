@@ -4,6 +4,7 @@
 
 #include "service.h"
 #include <iostream>
+#include <algorithm>
 //Description: This function creates a service object
 //Input: -
 //Output: a service object
@@ -25,10 +26,10 @@ int Service::generateId() {
     //generate the new available id in the list
     //cout<<"Service generateId";
     int id = 0;
-    List<Product>* products = this->repo.getProducts();
-for (int i = 0; i < products->getSize(); i++) {
-        if (products->element(i).getId() > id) {
-            id = products->element(i).getId();
+    vector<Product>* products = this->repo.getProducts();
+    for (const auto& product : *products) {
+        if (product.getId() > id) {
+            id = product.getId();
         }
     }
     return id + 1;
@@ -51,7 +52,16 @@ void Service::addProduct(string name, string type, double price, string producer
 //Input: an integer representing the id of the product
 //Output: -
 void Service::removeProduct(int id) {
-    this->repo.removeProduct(id);
+    //check if id exists
+    vector<Product>* products = this->repo.getProducts();
+        for (const auto& product : *products) {
+            if (product.getId() == id) {
+                this->repo.removeProduct(id);
+                return;
+            }
+        }
+    throw std::invalid_argument("Product does not exist\n");
+
 }
 
 //Description: This function updates a product from the list
@@ -68,7 +78,7 @@ void Service::updateProduct(int id, string name, string type, double price, stri
 //Description: This function returns the list of products
 //Input: -
 //Output: a pointer to the list of products
-List<Product>* Service::getProducts() {
+vector<Product>* Service::getProducts() {
     return this->repo.getProducts();
 }
 
@@ -89,12 +99,12 @@ unsigned long Service::getSize() {
 //Description: This function filters the products by name, type, minPrice and maxPrice
 //Input: a string representing the string match of the name, a string representing  string match of the product, an integer representing the minPrice of the product, an integer representing the maxPrice of the product
 //Output: a pointer to the list of products
-void Service::filterProducts(List<Product>* filteredProducts,std::string name, std::string type, int minPrice, int maxPrice) {
-    List<Product>* products = this->repo.getProducts();
-    for (int i = 0; i < products->getSize(); i++) {
-        Product p = products->element(i);
+void Service::filterProducts(vector<Product>* filteredProducts,std::string name, std::string type, int minPrice, int maxPrice) {
+    vector<Product>* products = this->repo.getProducts();
+    for (const auto& product : *products) {
+        Product p = product;
         if (p.getName().find(name) != string::npos && p.getType().find(type) != string::npos && p.getPrice() >= minPrice && p.getPrice() <= maxPrice){
-            filteredProducts->append(p);
+            filteredProducts->push_back(p);
         }
     }
 }
@@ -102,17 +112,8 @@ void Service::filterProducts(List<Product>* filteredProducts,std::string name, s
 //Description: This function sorts the products by name
 //Input: a pointer to the list of products
 //Output: -
-
-void sort_prod(List<Product>* products, bool (*compare)(const Product&, const Product&)){
-    for (int i = 0; i < products->getSize() - 1; i++) {
-        for (int j = i + 1; j < products->getSize(); j++) {
-            if (!compare(products->element(i), products->element(j))) {
-                Product aux = products->element(i);
-                products->update(i, products->element(j));
-                products->update(j, aux);
-            }
-        }
-    }
+void sort_prod(vector<Product>* products, bool (*compare)(const Product&, const Product&)){
+    std::sort(products->begin(), products->end(), compare);
 }
 
 bool compareName(const Product& p1, const Product& p2) {
@@ -130,7 +131,7 @@ bool compareNameType(const Product& p1, const Product& p2) {
     return p1.getName() < p2.getName();
 }
 
-void Service::sortProducts(List<Product>* sortedProducts,int command) {
+void Service::sortProducts(vector<Product>* sortedProducts,int command) {
     //create a copy of the list of products
     //command 1 - sort by name
     //command 2 - sort by price

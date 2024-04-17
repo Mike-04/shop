@@ -18,11 +18,11 @@ public:
     void addProduct(string name, string type, double price, string producer);
     void removeProduct(int id);
     void updateProduct(int id, string name, string type, double price, string producer);
-    List<Product>* getProducts();
+    vector<Product>* getProducts();
     Product getProductById(int id);
     unsigned long getSize();
     int getPosition(Product &p);
-    void filterProducts(List<Product>* filteredProducts,string name, string type,int minPrice,int maxPrice);
-    void sortProducts(List<Product>* sortedProducts,int command);
+    void filterProducts(vector<Product>* filteredProducts,string name, string type,int minPrice,int maxPrice);
+    static void sortProducts(vector<Product>* sortedProducts,int command);
     int generateId();
 };
