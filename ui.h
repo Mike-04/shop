@@ -24,6 +24,7 @@ public:
     void printProducts();
     void filterProducts();
     void sortProducts();
+    void groupProductsByProducer();
     void printBasket();
     void addProductToBasket();
     void emptyBasket();

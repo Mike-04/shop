@@ -4,6 +4,7 @@
 
 #include "service.h"
 #include <iostream>
+#include "myexception.h"
 
 int rand(int min, int max) {
     std::random_device dev;
@@ -33,10 +34,10 @@ int Service::generateId() {
     //generate the new available id in the list
     //cout<<"Service generateId";
     int id = 1;
-    vector<Product>* products = this->repo.getProducts();
-    if(products->size()==0)
+    vector<Product> & products = this->repo.getProducts();
+    if(products.empty())
         return id;
-    for (const auto& product : *products) {
+    for (const auto& product : products) {
         if (product.getId() != id) {
             return id;
         }
@@ -53,7 +54,7 @@ void Service::addProduct(string name, string type, double price, string producer
     Product p = Product(generateId(), name, type, price, producer);
     p.validate();
     if(this->getPosition(p)!=-1)
-        throw std::invalid_argument("Product already exists\n");
+        throw RepoException("Product already exists\n");
     this->repo.addProduct(p);
 
 }
@@ -63,14 +64,14 @@ void Service::addProduct(string name, string type, double price, string producer
 //Output: -
 void Service::removeProduct(int id) {
     //check if id exists
-    vector<Product>* products = this->repo.getProducts();
-        for (const auto& product : *products) {
+    vector<Product> & products = this->repo.getProducts();
+        for (const auto& product : products) {
             if (product.getId() == id) {
                 this->repo.removeProduct(id);
                 return;
             }
         }
-    throw std::invalid_argument("Product does not exist\n");
+    throw RepoException("Product does not exist\n");
 
 }
 
@@ -81,14 +82,14 @@ void Service::updateProduct(int id, string name, string type, double price, stri
     Product p = Product(id, name, type, price, producer);
     p.validate();
     if(this->getPosition(p)!=-1)
-        throw std::invalid_argument("Product already exists\n");
+        throw RepoException("Product already exists\n");
     this->repo.updateProduct(id, p);
 }
 
 //Description: This function returns the list of products
 //Input: -
 //Output: a pointer to the list of products
-vector<Product>* Service::getProducts() {
+vector<Product> & Service::getProducts() {
     return this->repo.getProducts();
 }
 
@@ -109,8 +110,8 @@ unsigned long Service::getSize() {
 //Description: This function filters the products by name, type, minPrice and maxPrice
 //Input: a string representing the string match of the name, a string representing  string match of the product, an integer representing the minPrice of the product, an integer representing the maxPrice of the product
 //Output: a pointer to the list of products
-void Service::filterProducts(vector<Product>* filteredProducts,std::string name, std::string type, int minPrice, int maxPrice) {
-    vector<Product>* products = this->repo.getProducts();
+void Service::filterProducts(vector<Product>& filteredProducts,std::string name, std::string type, int minPrice, int maxPrice) {
+    vector<Product>& products = this->repo.getProducts();
     //use copy_if to filter the products
 //    for (const auto& product : *products) {
 //        Product p = product;
@@ -118,7 +119,7 @@ void Service::filterProducts(vector<Product>* filteredProducts,std::string name,
 //            filteredProducts->push_back(p);
 //        }
 //    }
-    std::copy_if(products->begin(), products->end(), std::back_inserter(*filteredProducts), [name, type, minPrice, maxPrice](const Product& p) {
+    std::copy_if(products.begin(), products.end(), std::back_inserter(filteredProducts), [name, type, minPrice, maxPrice](const Product& p) {
         return p.getName().find(name) != string::npos && p.getType().find(type) != string::npos && p.getPrice() >= minPrice && p.getPrice() <= maxPrice;
     });
 }
@@ -126,8 +127,8 @@ void Service::filterProducts(vector<Product>* filteredProducts,std::string name,
 //Description: This function sorts the products by name
 //Input: a pointer to the list of products
 //Output: -
-void sort_prod(vector<Product>* products, bool (*compare)(const Product&, const Product&)){
-    std::sort(products->begin(), products->end(), compare);
+void sort_prod(vector<Product>& products, bool (*compare)(const Product&, const Product&)){
+    std::sort(products.begin(), products.end(), compare);
 }
 
 bool compareName(const Product& p1, const Product& p2) {
@@ -145,7 +146,7 @@ bool compareNameType(const Product& p1, const Product& p2) {
     return p1.getName() < p2.getName();
 }
 
-void Service::sortProducts(vector<Product>* sortedProducts,int command) {
+void Service::sortProducts(vector<Product>& sortedProducts,int command) {
     //create a copy of the list of products
     //command 1 - sort by name
     //command 2 - sort by price
@@ -169,7 +170,7 @@ int Service::getPosition(Product &p) {
 //Description: This function returns the basket
 //Input: -
 //Output: a pointer to the list of products
-vector<Product>* Service::getBasket() {
+vector<Product> & Service::getBasket() {
     return this->repo.getBasketRepo();
 }
 
@@ -191,10 +192,10 @@ void Service::emptyBasket() {
 //Input: an integer representing the number of products in the basket
 //Output: -
 void Service::generateRandomBasket(int n) {
-    vector<Product>* allProducts = this->repo.getProducts();
+    vector<Product> & allProducts = this->repo.getProducts();
     for (int i = 0; i < n; i++) {
-        int randomIndex = rand(0, allProducts->size() - 1);
-        Product p = allProducts->at(randomIndex);
+        int randomIndex = rand(0, allProducts.size() - 1);
+        Product & p = allProducts.at(randomIndex);
         this->repo.addProductToBasket(p.getId());
     }
 }
@@ -203,11 +204,11 @@ void Service::generateRandomBasket(int n) {
 //Input: a string representing the filename
 //Output: -
 void Service::exportBasketToCSV(string filename) {
-    vector<Product>* products = this->repo.getBasketRepo();
+    vector<Product> & products = this->repo.getBasketRepo();
     std::ofstream file;
     file.open(filename);
     file<<"Id,Name,Type,Price,Producer\n";
-    for (const auto& product : *products) {
+    for (const auto& product : products) {
         file << product.getId() << "," << product.getName() << "," << product.getType() << "," << product.getPrice() << "," << product.getProducer() << "\n";
     }
 }
@@ -216,15 +217,26 @@ void Service::exportBasketToCSV(string filename) {
 //Input: a string representing the filename
 //Output: -
 void Service::exportBasketToHTML(string filename) {
-    vector<Product>* products = this->repo.getBasketRepo();
+    vector<Product>  products = this->repo.getBasketRepo();
     std::ofstream file;
     file.open(filename);
     file << "<!DOCTYPE html>\n<html>\n<head>\n<title>Shopping Basket</title>\n</head>\n<body>\n<table border=\"1\">\n<tr>\n<th>Id</th>\n<th>Name</th>\n<th>Type</th>\n<th>Price</th>\n<th>Producer</th>\n</tr>\n";
-    for (const auto& product : *products) {
+    for (const auto& product : products) {
         file << "<tr>\n<td>" << product.getId() << "</td>\n<td>" << product.getName() << "</td>\n<td>" << product.getType() << "</td>\n<td>" << product.getPrice() << "</td>\n<td>" << product.getProducer() << "</td>\n</tr>\n";
     }
     file << "</table>\n</body>\n</html>";
 }
+
+map<string, vector<Product>> Service::groupProductsByProducer(vector<Product> & products) {
+    map<string, vector<Product>> groupedProducts;
+    for (const auto& product : products) {
+        string producer = product.getProducer();
+        if (groupedProducts.find(producer) == groupedProducts.end()) {
+            groupedProducts[producer] = vector<Product>();
+        }
+        groupedProducts[producer].push_back(product);
+    }
+    return groupedProducts;}
 
 
 

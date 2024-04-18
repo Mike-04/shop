@@ -3,6 +3,8 @@
 //
 
 #include "ui.h"
+
+#include <cmath>
 #include <iostream>
 #include "utils.h"
 //Description: Constructor for UI class
@@ -15,8 +17,8 @@ UI::UI() {
 //Description: Constructor for UI class
 //Input: a Service object
 //Output: A UI object with the given values
-UI::UI(Service service) {
-    this->service = service;
+UI::UI(Service service) : service(service) {
+
 }
 //Description: This function runs the user interface
 //Input: -
@@ -25,7 +27,7 @@ void UI::run() {
     try {
         while (true) {
             printMenu();
-            int command;
+            int command = 0;
             cout << "Enter command: ";
             command = readInt();
             if (command == 0) {
@@ -51,21 +53,24 @@ void UI::run() {
                     sortProducts();
                     break;
                 case 7:
-                    addProductToBasket();
+                    groupProductsByProducer();
                     break;
                 case 8:
-                    printBasket();
+                    addProductToBasket();
                     break;
                 case 9:
-                    emptyBasket();
+                    printBasket();
                     break;
                 case 10:
-                    generateRandomBasket();
+                    emptyBasket();
                     break;
                 case 11:
-                    exportBasketToCSV();
+                    generateRandomBasket();
                     break;
                 case 12:
+                    exportBasketToCSV();
+                    break;
+                case 13:
                     exportBasketToHTML();
                     break;
                 default:
@@ -90,12 +95,13 @@ void UI::printMenu() {
     cout << "4. Print products" << endl;
     cout << "5. Filter products" << endl;
     cout << "6. Sort products" << endl;
-    cout << "7. Add product to basket" << endl;
-    cout << "8. Print basket" << endl;
-    cout << "9. Empty basket" << endl;
-    cout << "10. Generate random basket" << endl;
-    cout << "11. Export basket to CSV" << endl;
-    cout << "12. Export basket to HTML" << endl;
+    cout << "7. Group products by producer" << endl;
+    cout << "8. Add product to basket" << endl;
+    cout << "9. Print basket" << endl;
+    cout << "10. Empty basket" << endl;
+    cout << "11. Generate random basket" << endl;
+    cout << "12. Export basket to CSV" << endl;
+    cout << "13. Export basket to HTML" << endl;
     cout << "0. Exit" << endl;
 }
 
@@ -105,7 +111,7 @@ void UI::printMenu() {
 void UI::addProduct() {
     string name;
     string type;
-    double price;
+    double price = NAN;
     string producer;
     cout << "Enter name: ";
     name=readString();
@@ -126,7 +132,7 @@ void UI::addProduct() {
 //Input: -
 //Output: -
 void UI::removeProduct() {
-    int id;
+    int id = 0;
     cout << "Enter id: ";
     id=readInt();
     try {
@@ -140,10 +146,10 @@ void UI::removeProduct() {
 //Input: -
 //Output: -
 void UI::updateProduct() {
-    int id;
+    int id = 0;
     string name;
     string type;
-    double price;
+    double price = NAN;
     string producer;
     cout << "Enter id: ";
     id=readInt();
@@ -168,9 +174,9 @@ void UI::updateProduct() {
 //Output: -
 void UI::printProducts() {
     cout<< "UI print products" << endl;
-    vector<Product>* products = this->service.getProducts();
+    vector<Product> & products = this->service.getProducts();
     //use range based for
-    for (auto product : *products) {
+    for (auto &product : products) {
         cout << product.toString() << endl;
     }
 }
@@ -200,8 +206,8 @@ void UI::filterProducts() {
         maxPrice = stoi(maxPriceString);
     }
     vector<Product> filteredProducts;
-    this->service.filterProducts(&filteredProducts,name, type, minPrice, maxPrice);
-    for (auto product : filteredProducts) {
+    this->service.filterProducts(filteredProducts,name, type, minPrice, maxPrice);
+    for (auto &product : filteredProducts) {
         cout << product.toString() << endl;
     }
 
@@ -219,10 +225,22 @@ void UI::sortProducts() {
     int command = 0;
     cout << "Enter command: ";
     command= readInt();
-    vector<Product> sortedproducts=*this->service.getProducts();
-    this->service.sortProducts(&sortedproducts, command);
-    for (auto product : sortedproducts) {
+    vector<Product> sortedproducts=this->service.getProducts();
+    Service::sortProducts(sortedproducts, command);
+    for (auto &product : sortedproducts) {
         cout << product.toString() << endl;
+    }
+
+}
+
+void UI::groupProductsByProducer() {
+    auto products = this->service.getProducts();
+    map<string,vector<Product>> groupedProducts = Service::groupProductsByProducer(products);
+    for (auto & group : groupedProducts) {
+        cout << group.first << endl;
+        for (auto &product : group.second) {
+            cout << product.toString() << endl;
+        }
     }
 
 }
@@ -233,7 +251,7 @@ void UI::sortProducts() {
 void UI::addProductToBasket() {
     //print all products
     printProducts();
-    int id;
+    int id = 0;
     cout << "Enter id: ";
     id=readInt();
     try {
@@ -254,7 +272,7 @@ void UI::emptyBasket() {
 //Input: -
 //Output: -
 void UI::generateRandomBasket() {
-    int n;
+    int n = 0;
     cout << "Enter number of products: ";
     n=readInt();
     this->service.generateRandomBasket(n);
@@ -284,8 +302,8 @@ void UI::exportBasketToHTML() {
 //Input: -
 //Output: -
 void UI::printBasket() {
-    vector<Product>* products = this->service.getBasket();
-    for (auto product : *products) {
+    vector<Product> & products = this->service.getBasket();
+    for (auto &product : products) {
         cout << product.toString() << endl;
     }
 }

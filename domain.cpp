@@ -4,6 +4,7 @@
 
 #include "domain.h"
 #include <iostream>
+#include "myexception.h"
 //Description: Default constructor for the Product class
 //Input: -
 //Output: A Product object with default values
@@ -13,7 +14,7 @@ Product::Product() : id(0), price(0){
 //Description: Constructor for the Product class
 //Input: an integer representing the id of the product, a string representing the name of the product, a string representing the type of the product, a double representing the price of the product, a string representing the producer of the product
 //Output: A Product object with the given values
-Product::Product(int id, string name, string type, double price, string producer) : id(id), name(name), type(type), producer(producer), price(price) {
+Product::Product(int id, string name, string type, double price, string producer) : id(id), name(name), type(type), price(price), producer(producer) {
 }
 
 //Description: This function returns the id of the product
@@ -90,8 +91,8 @@ void Product::setProducer(const string &producer) {
 //Description: Copy constructor for the Product class
 //Input: a Product object
 //Output: A Product object with the same values as the given object
-Product::Product(Product const &p) : id(p.id), type(p.type), price(p.price), producer(p.producer), name(p.name) {
-    //cout<< "Copy constructor called" << endl;
+Product::Product(Product const &p) : id(p.id), name(p.name), type(p.type), price(p.price), producer(p.producer) {
+    cout<< "Copy constructor called" << endl;
 }
 
 //Description: This function returns a string representation of the product
@@ -106,7 +107,7 @@ string Product::toString() {
 //Description: Overloaded assignment operator for the Product class
 //Input: a Product object
 //Output: a Product object with the same values as the given object
-Product& Product::operator=(Product const &p) {
+Product& Product::operator = (Product const &p) {
     this->id = p.id;
     this->name = p.name;
     this->type = p.type;
@@ -132,6 +133,6 @@ Product::~Product() = default;
 //Output: a boolean value, true if the product is valid, false otherwise
 void Product::validate() {
     if (this->name.empty() || this->type.empty() || this->producer.empty() || this->price < 0) {
-    throw std::invalid_argument("Invalid product!\n");
+    throw ValidationException("Invalid product!\n");
     }
 }

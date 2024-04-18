@@ -139,7 +139,7 @@ void test_domain() {
         Product p3 = Product(4, "Phone", "Electronics", -1000, "Samsung");
         p3.validate();
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 }
@@ -150,9 +150,9 @@ void test_repo() {
     Product p2 = Product(2, "PC", "Electronics", 3000, "Dell");
 
     repo.addProduct(p1);
-    assert(repo.getProducts()->size() == 1);
+    assert(repo.getProducts().size() == 1);
     repo.addProduct(p2);
-    assert(repo.getProducts()->size() == 2);
+    assert(repo.getProducts().size() == 2);
 
     repo.removeProduct(1);
     assert(repo.getSize() == 1);
@@ -163,7 +163,7 @@ void test_repo() {
     Product p3 = Product(2, "PC", "Electronics", 4000, "Dell");
 
     repo.updateProduct(2 , p3);
-    assert(repo.getProducts()->at(0).getPrice() == 4000);
+    assert(repo.getProducts().at(0).getPrice() == 4000);
 
     //test get position
     assert(repo.getPosition(p3) == 0);
@@ -185,7 +185,7 @@ void test_service() {
     try {
         service.addProduct("PC", "Electronics", 3000, "Dell");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 
@@ -193,7 +193,7 @@ void test_service() {
     try {
         service.addProduct("Phone", "Electronics", -1000, "Samsung");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 
@@ -205,7 +205,7 @@ void test_service() {
     try {
         service.removeProduct(1);
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 
@@ -221,7 +221,7 @@ void test_service() {
     try {
         service.updateProduct(2, "PC", "Electronics", 4000, "Dell");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 
@@ -229,15 +229,15 @@ void test_service() {
     try {
         service.updateProduct(2, "PC", "Electronics", -4000, "Dell");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const std::exception& e) {
         assert(true);
     }
 
     assert(service.getProductById(2).getPrice() == 4000);
 
     //test get products
-    vector<Product>* products = service.getProducts();
-    assert(products->size() == 1);
+    vector<Product> products = service.getProducts();
+    assert(products.size() == 1);
 
     //test service with empty repo
     Service service2;
@@ -268,18 +268,18 @@ void test_service() {
 
 
     vector<Product> filtered;
-    service3.filterProducts(&filtered,"", "Elec", 0, 2000);
+    service3.filterProducts(filtered,"", "Elec", 0, 2000);
     assert(filtered.size() == 1);
 
     //test sort
-    vector<Product> sorted=*service3.getProducts();
-    service3.sortProducts(&sorted, 1);
+    vector<Product> sorted=service3.getProducts();
+    Service::sortProducts(sorted, 1);
     assert(sorted.at(0).getName() == "Laptop");
     assert(sorted.at(1).getName() == "PC");
     assert(sorted.at(2).getName() == "Phone");
 
-    sorted=*service3.getProducts();
-    service3.sortProducts(&sorted, 2);
+    sorted=service3.getProducts();
+    Service::sortProducts(sorted, 2);
     assert(sorted.at(0).getName() == "Phone");
     assert(sorted.at(1).getName() == "Laptop");
     assert(sorted.at(2).getName() == "PC");
@@ -287,8 +287,8 @@ void test_service() {
 
     service3.addProduct("PC", "Gadget", 3000, "Dell");
 
-    sorted=*service3.getProducts();
-    service3.sortProducts(&sorted, 3);
+    sorted=service3.getProducts();
+    Service::sortProducts(sorted, 3);
     assert(sorted.at(0).getName() == "Laptop");
     assert(sorted.at(1).getName() == "PC");
     assert(sorted.at(2).getName() == "PC");
@@ -296,16 +296,16 @@ void test_service() {
 
     //test add product to basket
     service3.addProductToBasket(1);
-    assert(service3.getBasket()->size() == 1);
+    assert(service3.getBasket().size() == 1);
 
     //test empty basket
     service3.emptyBasket();
-    assert(service3.getBasket()->size() == 0);
+    assert(service3.getBasket().empty());
 
 
     //test generate random basket
     service3.generateRandomBasket(2);
-    assert(service3.getBasket()->size() == 2);
+    assert(service3.getBasket().size() == 2);
 
     //test export basket to csv
     service3.exportBasketToCSV("test.csv");
@@ -318,10 +318,17 @@ void test_service() {
     service3.removeProduct(1);
     assert(service3.generateId() == 1);
 
-
-
-
-
+    //test group products by producer
+    Service service4;
+    service4.addProduct("Phone", "Gadget", 1000, "Samsung");
+    service4.addProduct("Laptop", "Electronics", 2000, "Asus");
+    service4.addProduct("PC", "Electronics", 3000, "Dell");
+    service4.addProduct("PC", "Gadget", 3000, "Dell");
+    map<string,vector<Product>> grouped = Service::groupProductsByProducer(service4.getProducts());
+    assert(grouped.size() == 3);
+    assert(grouped["Samsung"].size() == 1);
+    assert(grouped["Asus"].size() == 1);
+    assert(grouped["Dell"].size() == 2);
 }
 
 void test_all() {

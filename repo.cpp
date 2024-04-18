@@ -24,7 +24,7 @@ void Repository::addProduct(Product &p) {
 //Input: an integer representing the id of the product
 //Output: -
 void Repository::removeProduct(int id) {
-    for (int i = 0; i < this->products_list.size(); i++) {
+    for (unsigned long i = 0; i < this->products_list.size(); i++) {
         if (this->products_list.at(i).getId() == id) {
             this->products_list.erase(products_list.begin()+i);
             return;
@@ -36,7 +36,7 @@ void Repository::removeProduct(int id) {
 //Input: an integer representing the id of the product, a Product object
 //Output: -
 void Repository::updateProduct(int id, Product &p) {
-    for(int i=0;i<this->products_list.size();i++){
+    for(unsigned long i=0;i<this->products_list.size();i++){
         if (products_list.at(i).getId() == id) {
             products_list[i]=p;
             return;
@@ -47,16 +47,16 @@ void Repository::updateProduct(int id, Product &p) {
 //Description: This function returns a pointer to the vector of products
 //Input: -
 //Output: a pointer to the vector of products
-vector<Product>* Repository::getProducts() {
+vector<Product> & Repository::getProducts() {
     //return pointer to the vector
-    return &this->products_list;
+    return this->products_list;
 }
 
 //Description: This function returns a product from the list
 //Input: an integer representing the id of the product
 //Output: a Product object
 Product Repository::getProductById(int id) {
-    for(int i=0;i<this->products_list.size();i++) {
+    for(unsigned long i=0;i<this->products_list.size();i++) {
         if (products_list.at(i).getId() == id) {
             return products_list.at(i);
         }
@@ -82,8 +82,8 @@ Repository::~Repository() {
 //Description: This function returns the position of a product in the list
 //Input: a Product object
 //Output: an integer representing the position of the product in the list
-int Repository::getPosition(Product &p) {
-    for(int i=0;i<this->products_list.size();i++){
+unsigned long Repository::getPosition(Product &p) {
+    for(unsigned long i=0;i < this->products_list.size();i++){
         if(products_list.at(i)==p){
             return i;
         }
@@ -95,9 +95,9 @@ int Repository::getPosition(Product &p) {
 //Input: an intiger representing the id of the product
 //Output: -
 void Repository::addProductToBasket(int id) {
-    for (int i = 0; i < this->products_list.size(); i++) {
-        if (this->products_list.at(i).getId() == id) {
-            this->basket.push_back(this->products_list.at(i));
+    for(const auto & i : this->products_list) {
+        if (i.getId() == id) {
+            this->basket.push_back(i);
             return;
         }
     }
@@ -114,8 +114,8 @@ void Repository::emptyBasket() {
 //Description: This function returns the basket
 //Input: -
 //Output: a vector of Product objects representing the basket
-vector<Product>* Repository::getBasketRepo() {
-    return &this->basket;
+vector<Product> & Repository::getBasketRepo() {
+    return this->basket;
 }
 
 

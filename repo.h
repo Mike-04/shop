@@ -20,12 +20,12 @@ public:
     void addProduct(Product &p);
     void removeProduct(int id);
     void updateProduct(int id, Product &p);
-    vector<Product>* getProducts();
+    vector<Product> & getProducts();
     Product getProductById(int id);
-    int getPosition(Product &p);
+    unsigned long getPosition(Product &p);
     unsigned long getSize();
     ~Repository();
     void addProductToBasket(int id);
     void emptyBasket();
-    vector<Product>* getBasketRepo();
+    vector<Product> & getBasketRepo();
 };
