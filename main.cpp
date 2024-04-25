@@ -22,9 +22,9 @@ int main() {
     repo.addProduct(p4=Product(4, "Tablet", "Electronics", 1500, "Apple"));
     repo.addProduct(p5=Product(5, "Smartwatch", "Electronics", 500, "Xiaomi"));
     repo.addProduct(p6=Product(6, "Headphones", "Electronics", 100, "Apple"));
-    Service service = Service(repo);
+    Service service(repo);
 
-    UI ui = UI(service);
+    UI ui(service);
     //system("clear");
     ui.run();
 

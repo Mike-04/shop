@@ -12,17 +12,25 @@
 #include <algorithm>
 #include <fstream>
 #include <map>
-
+#include <memory>
+#include <iterator>
+#include <vector>
+#include "undo.h"
+using std::unique_ptr;
 
 class Service {
 private:
-    Repository repo;
+    Repository& repo;
+    std::vector<unique_ptr<UndoAction>> undoActions;
 public:
-    Service();
-    explicit Service(Repository repo);
+    explicit Service(Repository& repo): repo{repo} {}
+    ~Service() = default;
+    Service(const Service &s) = delete;
+    void operator=(const Service &s) = delete;
     void addProduct(string name, string type, double price, string producer);
     void removeProduct(int id);
     void updateProduct(int id, string name, string type, double price, string producer);
+    void undo();
     vector<Product> & getProducts();
     Product getProductById(int id);
     unsigned long getSize();

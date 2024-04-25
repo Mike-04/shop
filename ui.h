@@ -12,10 +12,9 @@
 
 class UI {
 private:
-    Service service;
+    Service& service;
 public:
-    UI();
-    UI(Service service);
+    UI(Service& service) : service(service) {};
     void run();
     static void printMenu();
     void addProduct();
@@ -31,4 +30,5 @@ public:
     void generateRandomBasket();
     void exportBasketToCSV();
     void exportBasketToHTML();
+    void undo();
 };

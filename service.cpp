@@ -4,6 +4,7 @@
 
 #include "service.h"
 #include <iostream>
+#include <iterator>
 #include "myexception.h"
 
 int rand(int min, int max) {
@@ -11,20 +12,6 @@ int rand(int min, int max) {
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist6(min, max);
     return dist6(rng);
-}
-
-//Description: This function creates a service object
-//Input: -
-//Output: a service object
-Service::Service() {
-    this->repo = Repository();
-}
-
-//Description: This function creates a service object
-//Input: a repository object
-//Output: a service object
-Service::Service(Repository repo) : repo(repo) {
-
 }
 
 //Description: This function generates the new available id in the list
@@ -56,6 +43,7 @@ void Service::addProduct(string name, string type, double price, string producer
     if(this->getPosition(p)!=-1)
         throw RepoException("Product already exists\n");
     this->repo.addProduct(p);
+    this->undoActions.push_back(std::make_unique<UndoAdd>(this->repo, p));
 
 }
 
@@ -67,6 +55,7 @@ void Service::removeProduct(int id) {
     vector<Product> & products = this->repo.getProducts();
         for (const auto& product : products) {
             if (product.getId() == id) {
+                this->undoActions.push_back(std::make_unique<UndoRemove>(this->repo, product));
                 this->repo.removeProduct(id);
                 return;
             }
@@ -83,7 +72,21 @@ void Service::updateProduct(int id, string name, string type, double price, stri
     p.validate();
     if(this->getPosition(p)!=-1)
         throw RepoException("Product already exists\n");
+    Product oldProduct = this->repo.getProductById(id);
+    this->undoActions.push_back(std::make_unique<UndoUpdate>(this->repo, oldProduct));
     this->repo.updateProduct(id, p);
+
+}
+
+//Description: This function undoes the last operation
+//Input: -
+//Output: -
+void Service::undo() {
+    if (this->undoActions.empty()) {
+        throw UndoException("No more undos\n");
+    }
+    this->undoActions.back()->executeUndo();
+    this->undoActions.pop_back();
 }
 
 //Description: This function returns the list of products

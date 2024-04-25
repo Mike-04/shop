@@ -240,7 +240,8 @@ void test_service() {
     assert(products.size() == 1);
 
     //test service with empty repo
-    Service service2;
+    Repository repo2;
+    Service service2(repo2);
     service2.addProduct("Laptop", "Electronics", 2000, "Asus");
     service2.addProduct("PC", "Electronics", 3000, "Dell");
 
@@ -261,7 +262,8 @@ void test_service() {
 
 
     //test filter
-    Service service3;
+    Repository repo3;
+    Service service3(repo3);
     service3.addProduct("Phone", "Gadget", 1000, "Samsung");
     service3.addProduct("Laptop", "Electronics", 2000, "Asus");
     service3.addProduct("PC", "Electronics", 3000, "Dell");
@@ -319,7 +321,8 @@ void test_service() {
     assert(service3.generateId() == 1);
 
     //test group products by producer
-    Service service4;
+    Repository repo4;
+    Service service4(repo4);
     service4.addProduct("Phone", "Gadget", 1000, "Samsung");
     service4.addProduct("Laptop", "Electronics", 2000, "Asus");
     service4.addProduct("PC", "Electronics", 3000, "Dell");
@@ -331,9 +334,45 @@ void test_service() {
     assert(grouped["Dell"].size() == 2);
 }
 
+void test_undo()
+{
+    Repository repo;
+    Service service(repo);
+    //test add product
+    service.addProduct("Laptop", "Electronics", 2000, "Asus");
+    service.addProduct("PC", "Electronics", 3000, "Dell");
+    assert(service.getSize() == 2);
+    service.undo();
+    assert(service.getSize() == 1);
+    service.undo();
+    assert(service.getSize() == 0);
+    //try undo when there are no actions
+    try{
+        service.undo();
+    }
+    catch (const std::exception& e) {
+        assert(true);
+    }
+    //test remove product
+    service.addProduct("Laptop", "Electronics", 2000, "Asus");
+    service.addProduct("PC", "Electronics", 3000, "Dell");
+    service.removeProduct(1);
+    assert(service.getSize() == 1);
+    service.undo();
+    assert(service.getSize() == 2);
+    //check if the product was added back
+    assert(service.getProductById(1).getName() == "Laptop");
+    //test update product
+    service.updateProduct(1, "PC", "Electronics", 4000, "Dell");
+    assert(service.getProductById(1).getPrice() == 4000);
+    service.undo();
+    assert(service.getProductById(1).getPrice() == 2000);
+}
+
 void test_all() {
     test_list();
     test_domain();
     test_repo();
     test_service();
+    test_undo();
 }

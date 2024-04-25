@@ -35,13 +35,13 @@ public:
 };
 
 
-class ParseException : public std::exception
+class UndoException : public std::exception
 {
 private:
     std::string message;
 
 public:
-    explicit ParseException(const std::string& msg) : message(msg) {}
+    explicit UndoException(const std::string& msg) : message(msg) {}
 
     // Override what() to provide custom error message
     const char* what() const noexcept override

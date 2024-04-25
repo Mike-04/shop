@@ -7,19 +7,6 @@
 #include <cmath>
 #include <iostream>
 #include "utils.h"
-//Description: Constructor for UI class
-//Input: -
-//Output: A UI object with default values
-UI::UI() {
-    this->service = Service();
-}
-
-//Description: Constructor for UI class
-//Input: a Service object
-//Output: A UI object with the given values
-UI::UI(Service service) : service(service) {
-
-}
 //Description: This function runs the user interface
 //Input: -
 //Output: -
@@ -47,30 +34,33 @@ void UI::run() {
                     printProducts();
                     break;
                 case 5:
-                    filterProducts();
+                    undo();
                     break;
                 case 6:
-                    sortProducts();
+                    filterProducts();
                     break;
                 case 7:
-                    groupProductsByProducer();
+                    sortProducts();
                     break;
                 case 8:
-                    addProductToBasket();
+                    groupProductsByProducer();
                     break;
                 case 9:
-                    printBasket();
+                    addProductToBasket();
                     break;
                 case 10:
-                    emptyBasket();
+                    printBasket();
                     break;
                 case 11:
-                    generateRandomBasket();
+                    emptyBasket();
                     break;
                 case 12:
-                    exportBasketToCSV();
+                    generateRandomBasket();
                     break;
                 case 13:
+                    exportBasketToCSV();
+                    break;
+                case 14:
                     exportBasketToHTML();
                     break;
                 default:
@@ -93,15 +83,16 @@ void UI::printMenu() {
     cout << "2. Remove product" << endl;
     cout << "3. Update product" << endl;
     cout << "4. Print products" << endl;
-    cout << "5. Filter products" << endl;
-    cout << "6. Sort products" << endl;
-    cout << "7. Group products by producer" << endl;
-    cout << "8. Add product to basket" << endl;
-    cout << "9. Print basket" << endl;
-    cout << "10. Empty basket" << endl;
-    cout << "11. Generate random basket" << endl;
-    cout << "12. Export basket to CSV" << endl;
-    cout << "13. Export basket to HTML" << endl;
+    cout << "5. Undo ur mistakes u dummy" << endl;
+    cout << "6. Filter products" << endl;
+    cout << "7. Sort products" << endl;
+    cout << "8. Group products by producer" << endl;
+    cout << "9. Add product to basket" << endl;
+    cout << "10. Print basket" << endl;
+    cout << "11. Empty basket" << endl;
+    cout << "12. Generate random basket" << endl;
+    cout << "13. Export basket to CSV" << endl;
+    cout << "14. Export basket to HTML" << endl;
     cout << "0. Exit" << endl;
 }
 
@@ -305,6 +296,15 @@ void UI::printBasket() {
     vector<Product> & products = this->service.getBasket();
     for (auto &product : products) {
         cout << product.toString() << endl;
+    }
+}
+
+void UI::undo(){
+    try {
+        this->service.undo();
+    }
+    catch(exception& e){
+        cout << e.what();
     }
 }
 
