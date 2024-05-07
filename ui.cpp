@@ -11,8 +11,9 @@
 //Input: -
 //Output: -
 void UI::run() {
-    try {
+
         while (true) {
+            try {
             printMenu();
             int command = 0;
             cout << "Enter command: ";
@@ -68,10 +69,11 @@ void UI::run() {
                     break;
             }
         }
+        catch (exception& e) {
+            cout << e.what();
+        }
     }
-    catch (exception& e) {
-        cout << e.what();
-    }
+
 }
 
 //Description: This function prints the menu

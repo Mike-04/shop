@@ -20,10 +20,10 @@ using std::unique_ptr;
 
 class Service {
 private:
-    Repository& repo;
+    Repo& repo;
     std::vector<unique_ptr<UndoAction>> undoActions;
 public:
-    explicit Service(Repository& repo): repo{repo} {}
+    explicit Service(Repo& repo): repo{repo} {}
     ~Service() = default;
     Service(const Service &s) = delete;
     void operator=(const Service &s) = delete;

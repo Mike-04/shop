@@ -103,8 +103,8 @@ void test_list()
 }
 
 void test_domain() {
-    Product p1 = Product(1, "Laptop", "Electronics", 2000, "Asus");
-    assert(p1.getId() == 1);
+    Product p1 = Product(69, "Laptop", "Electronics", 2000, "Asus");
+    assert(p1.getId() == 69);
     assert(p1.getName() == "Laptop");
     assert(p1.getType() == "Electronics");
     assert(p1.getPrice() == 2000);
@@ -150,9 +150,34 @@ void test_repo() {
     Product p2 = Product(2, "PC", "Electronics", 3000, "Dell");
 
     repo.addProduct(p1);
-    assert(repo.getProducts().size() == 1);
+    assert(repo.getSize() == 1);
     repo.addProduct(p2);
-    assert(repo.getProducts().size() == 2);
+    assert(repo.getSize()== 2);
+
+    repo.removeProduct(1);
+    assert(repo.getSize() == 1);
+
+    assert(repo.getProductById(2).getName() == "PC");
+    assert(repo.getProductById(3).getName().empty());
+
+    Product p3 = Product(2, "PC", "Electronics", 4000, "Dell");
+
+    repo.updateProduct(2 , p3);
+    assert(repo.getProducts()[0].getPrice() == 4000);
+
+    //test get position
+    assert(repo.getPosition(p3) == 0);
+}
+
+void test_repo_map() {
+    Repository_Map repo(0);
+    Product p1 = Product(1, "Laptop", "Electronics", 2000, "Asus");
+    Product p2 = Product(2, "PC", "Electronics", 3000, "Dell");
+
+    repo.addProduct(p1);
+    assert(repo.getSize() == 1);
+    repo.addProduct(p2);
+    assert(repo.getSize() == 2);
 
     repo.removeProduct(1);
     assert(repo.getSize() == 1);
@@ -332,6 +357,33 @@ void test_service() {
     assert(grouped["Samsung"].size() == 1);
     assert(grouped["Asus"].size() == 1);
     assert(grouped["Dell"].size() == 2);
+
+
+    Repository_Map repo5(0);
+    Service service5(repo5);
+    service5.addProduct("Phone", "Gadget", 1000, "Samsung");
+    service5.addProduct("Laptop", "Electronics", 2000, "Asus");
+    service5.addProduct("PC", "Electronics", 3000, "Dell");
+    service5.addProduct("PC", "Gadget", 3000, "Dell");
+
+    //test basket repo
+    service5.addProductToBasket(1);
+    service5.addProductToBasket(2);
+    service5.addProductToBasket(3);
+
+    assert(service5.getBasket().size() == 3);
+
+    service5.emptyBasket();
+
+    assert(service5.getBasket().empty());
+
+    service5.generateRandomBasket(2);
+
+    assert(service5.getBasket().size() == 2);
+
+    service5.exportBasketToCSV("test.csv");
+
+    service5.exportBasketToHTML("test.html");
 }
 
 void test_undo()
@@ -373,6 +425,7 @@ void test_all() {
     test_list();
     test_domain();
     test_repo();
+    test_repo_map();
     test_service();
     test_undo();
 }

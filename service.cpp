@@ -114,7 +114,7 @@ unsigned long Service::getSize() {
 //Input: a string representing the string match of the name, a string representing  string match of the product, an integer representing the minPrice of the product, an integer representing the maxPrice of the product
 //Output: a pointer to the list of products
 void Service::filterProducts(vector<Product>& filteredProducts,std::string name, std::string type, int minPrice, int maxPrice) {
-    vector<Product>& products = this->repo.getProducts();
+    vector<Product> & products = this->repo.getProducts();
     //use copy_if to filter the products
 //    for (const auto& product : *products) {
 //        Product p = product;
@@ -220,7 +220,7 @@ void Service::exportBasketToCSV(string filename) {
 //Input: a string representing the filename
 //Output: -
 void Service::exportBasketToHTML(string filename) {
-    vector<Product>  products = this->repo.getBasketRepo();
+    vector<Product> & products = this->repo.getBasketRepo();
     std::ofstream file;
     file.open(filename);
     file << "<!DOCTYPE html>\n<html>\n<head>\n<title>Shopping Basket</title>\n</head>\n<body>\n<table border=\"1\">\n<tr>\n<th>Id</th>\n<th>Name</th>\n<th>Type</th>\n<th>Price</th>\n<th>Producer</th>\n</tr>\n";

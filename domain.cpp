@@ -92,7 +92,7 @@ void Product::setProducer(const string &producer) {
 //Input: a Product object
 //Output: A Product object with the same values as the given object
 Product::Product(Product const &p) : id(p.id), name(p.name), type(p.type), price(p.price), producer(p.producer) {
-    cout<< "Copy constructor called" << endl;
+    //cout<< "Copy constructor called" << endl;
 }
 
 //Description: This function returns a string representation of the product

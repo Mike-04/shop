@@ -11,9 +11,9 @@ public:
 class UndoAdd : public UndoAction {
     private:
         Product addedProduct;
-        Repository &repo;
+        Repo &repo;
     public:
-        UndoAdd(Repository &repo, const Product &p) : repo{repo}, addedProduct{p} {}
+        UndoAdd(Repo &repo, const Product &p) : addedProduct{p}, repo{repo} {}
         void executeUndo() override {
             repo.removeProduct(addedProduct.getId());
         }
@@ -23,9 +23,9 @@ class UndoAdd : public UndoAction {
 class UndoRemove : public UndoAction {
 private:
     Product removedProduct;
-    Repository &repo;
+    Repo &repo;
 public:
-    UndoRemove(Repository &repo, const Product &p) : repo{repo}, removedProduct{p} {}
+    UndoRemove(Repo &repo, const Product &p) : removedProduct{p}, repo{repo} {}
     void executeUndo() override {
         repo.addProduct(removedProduct);
     }
@@ -35,9 +35,9 @@ public:
 class UndoUpdate : public UndoAction {
 private:
     Product updatedProduct;
-    Repository &repo;
+    Repo &repo;
 public:
-    UndoUpdate(Repository &repo, const Product &p) : repo{repo}, updatedProduct{p} {}
+    UndoUpdate(Repo &repo,const Product &p) : updatedProduct{p}, repo{repo} {}
     void executeUndo() override {
         repo.updateProduct(updatedProduct.getId(), updatedProduct);
     }
