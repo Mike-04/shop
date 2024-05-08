@@ -3,16 +3,18 @@
 //
 
 #include "tests.h"
+#include "gui.h"
 #include "ui.h"
 #include "repo.h"
 #include "service.h"
+
 #include <iostream>
+#include <QtWidgets/QApplication>
 
-int main() {
-    test_all();
-
+void console_app()
+{
     cout<<"Tests passed\n";
-    Repository_Map repo = Repository_Map(0);
+    Repository repo;
     //add some products
 
     Product p1,p2,p3,p4,p5,p6;
@@ -32,6 +34,22 @@ int main() {
     UI ui(service);
     //system("clear");
     ui.run();
+}
+
+void gui_app(int argc, char* argv[])
+{
+    QApplication Shop(argc, argv);
+    Repository repo;
+    Service service(repo);
+    GUI gui(service);
+    gui.show();
+    Shop.exec();
+}
+
+int main() {
+    test_all();
+
+    gui_app(0, nullptr);
 
 
     return 0;
