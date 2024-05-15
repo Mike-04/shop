@@ -9,6 +9,7 @@
 #include "service.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QFileDialog>
 
 class GUI: public QWidget{
 friend class FilterWindow;
@@ -84,4 +85,20 @@ public:
 private:
     GUI& gui;
     void filter();
+};
+
+class BasketWindow: public QWidget{
+friend class GUI;
+private:
+    Service &service;
+public:
+    BasketWindow(Service& service);
+    QVBoxLayout* MainBox = new QVBoxLayout;
+    QListWidget *BasketList;
+    QPushButton *ExportCSVButton = new QPushButton("Export to CSV");
+    QPushButton *ExportHTMLButton = new QPushButton("Export to HTML");
+    QPushButton *EmptyButton = new QPushButton("Empty basket");
+    void populateList();
+    void exportToCSV();
+    void exportToHTML();
 };

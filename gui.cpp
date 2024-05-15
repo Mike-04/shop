@@ -96,7 +96,8 @@ void GUI::connectSignals(){
     QObject::connect(SortIdButton, &QPushButton::clicked, [this](){populateList();});
     QObject::connect(FilterButton, &QPushButton::clicked, this, &GUI::handleFilter);
     QObject::connect(GroupButton, &QPushButton::clicked, this, &GUI::groupProducts);
-
+    QObject::connect(AddToBasketButton, &QPushButton::clicked, this, &GUI::addProductToBasket);
+    QObject::connect(ViewBasketButton, &QPushButton::clicked, this, &GUI::viewBasket);
 
 }
 
@@ -211,6 +212,25 @@ void GUI::groupProducts() {
     }
 }
 
+void GUI::addProductToBasket() {
+    int id = this->current_id;
+    try {
+        this->service.addProductToBasket(id);
+        //show basket in qDebug
+        qDebug() << "Basket:";
+        for (auto &product : this->service.getBasket()) {
+            qDebug() << QString::fromStdString(product.toString());
+        }
+    }
+    catch (exception &e) {
+        QMessageBox::critical(this, "Error", e.what());
+    }
+}
+
+void GUI::viewBasket() {
+    BasketWindow* basketWindow = new BasketWindow(this->service);
+    basketWindow->show();
+}
 
 FilterWindow::FilterWindow(GUI& gui) : gui{gui} {
     setLayout(MainBox);
@@ -250,4 +270,42 @@ void FilterWindow::filter() {
     int maxPrice = MaxPrice->text().toInt();
     gui.setFilter(name, type, minPrice, maxPrice);
     close();
+}
+
+BasketWindow::BasketWindow(Service& service) : service{service} {
+    setLayout(MainBox);
+    BasketList = new QListWidget{};
+    MainBox->addWidget(BasketList);
+    populateList();
+
+    EmptyButton= new QPushButton("Empty basket");
+    MainBox->addWidget(EmptyButton);
+    connect(EmptyButton, &QPushButton::clicked, [this](){
+        this->service.emptyBasket();
+        close();
+    });
+
+    ExportCSVButton= new QPushButton("Export to CSV");
+    MainBox->addWidget(ExportCSVButton);
+    connect(ExportCSVButton, &QPushButton::clicked, this, &BasketWindow::exportToCSV);
+
+    ExportHTMLButton= new QPushButton("Export to HTML");
+    MainBox->addWidget(ExportHTMLButton);
+    connect(ExportHTMLButton, &QPushButton::clicked, this, &BasketWindow::exportToHTML);
+}
+
+void BasketWindow::populateList() {
+    for (auto &product : this->service.getBasket()) {
+        BasketList->addItem(QString::fromStdString(product.toString()));
+    }
+}
+
+void BasketWindow::exportToCSV() {
+    string filename = "Basket.csv";
+    this->service.exportBasketToCSV(filename);
+}
+
+void BasketWindow::exportToHTML() {
+    string filename = "Basket.html";
+    this->service.exportBasketToHTML(filename);
 }
