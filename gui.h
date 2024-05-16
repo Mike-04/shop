@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTableWidget>
 
 class GUI: public QWidget{
 friend class FilterWindow;
@@ -19,43 +20,49 @@ private:
 protected:
     string nameStr;
     string typeStr;
-    int minPriceVal;
-    int maxPriceVal;
+    int minPriceVal{};
+    int maxPriceVal{};
 public:
     GUI(Service& service);
     void initGUI();
 
     QHBoxLayout* MainBox = new QHBoxLayout;
-    QListWidget *ProductList;
+    QListWidget *ProductList{};
+    QTableWidget *ProductTable{};
     QVBoxLayout* Commands = new QVBoxLayout;
     QFormLayout* ProductDetails = new QFormLayout;
 
     QHBoxLayout* Actions = new QHBoxLayout;
-    QPushButton *AddButton;
-    QPushButton *RemoveButton;
-    QPushButton *UpdateButton;
-    QPushButton *UndoButton;
+    QPushButton *AddButton{};
+    QPushButton *RemoveButton{};
+    QPushButton *UpdateButton{};
+    QPushButton *UndoButton{};
 
     QHBoxLayout *SortActions = new QHBoxLayout;
-    QPushButton *SortNameButton;
-    QPushButton *SortPriceButton;
-    QPushButton *SortNameTypeButton;
-    QPushButton *SortIdButton;
+    QPushButton *SortNameButton{};
+    QPushButton *SortPriceButton{};
+    QPushButton *SortNameTypeButton{};
+    QPushButton *SortIdButton{};
 
     QPushButton *FilterButton = new QPushButton("Filter");
     QPushButton *GroupButton = new QPushButton("Group");
-
+    QPushButton *GenerateRandomBasketButton = new QPushButton("Generate random basket");
     QPushButton *AddToBasketButton = new QPushButton("Add to basket");
     QPushButton *ViewBasketButton = new QPushButton("View basket");
 
+    QVBoxLayout* CountButtons = new QVBoxLayout;
 
-    QLineEdit *Name;
-    QLineEdit *Type;
-    QLineEdit *Price;
-    QLineEdit *Producer;
+
+
+
+    QLineEdit *Name{};
+    QLineEdit *Type{};
+    QLineEdit *Price{};
+    QLineEdit *Producer{};
 
     void connectSignals();
     void populateList();
+    void populateTable();
     void addProduct();
     void removeProduct();
     void updateProduct();
@@ -66,9 +73,13 @@ public:
     void groupProducts();
     void addProductToBasket();
     void viewBasket();
+    void addCountButtons();
+    void removeCountButtons();
+    void generateRandomBasket();
 
 public slots:
     void handleclickedItem();
+    void handleTableclickedItem();
 };
 
 class FilterWindow: public QWidget{
@@ -101,4 +112,17 @@ public:
     void populateList();
     void exportToCSV();
     void exportToHTML();
+};
+
+class GenerateRandomBasketWindow: public QWidget{
+friend class GUI;
+private:
+    Service &service;
+public:
+    GenerateRandomBasketWindow(Service& service);
+    QVBoxLayout* MainBox = new QVBoxLayout;
+    QFormLayout* BasketDetails = new QFormLayout;
+    QLineEdit *Count;
+    QPushButton *GenerateButton = new QPushButton("Generate");
+    void generate();
 };
