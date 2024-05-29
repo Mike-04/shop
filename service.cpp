@@ -182,6 +182,7 @@ vector<Product> & Service::getBasket() {
 //Output: -
 void Service::addProductToBasket(int id) {
     this->repo.addProductToBasket(id);
+    this->notify();
 }
 
 //Description: This function empties the basket
@@ -189,6 +190,7 @@ void Service::addProductToBasket(int id) {
 //Output: -
 void Service::emptyBasket() {
     this->repo.emptyBasket();
+    this->notify();
 }
 
 //Description: This function generates a random basket
@@ -201,6 +203,7 @@ void Service::generateRandomBasket(int n) {
         Product & p = allProducts.at(randomIndex);
         this->repo.addProductToBasket(p.getId());
     }
+    this->notify();
 }
 
 //Description: This function exports the basket to a CSV file

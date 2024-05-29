@@ -34,6 +34,8 @@ add_executable(shop
         undo.h
         gui.cpp
         gui.h
+        observer.h
+        observer.cpp
 )
 
 target_link_libraries(shop Qt5::Widgets)

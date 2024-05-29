@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTableWidget>
+#include "observer.h"
+#include <QPainter>
 
 class GUI: public QWidget{
 friend class FilterWindow;
@@ -48,6 +50,7 @@ public:
     QPushButton *GroupButton = new QPushButton("Group");
     QPushButton *GenerateRandomBasketButton = new QPushButton("Generate random basket");
     QPushButton *AddToBasketButton = new QPushButton("Add to basket");
+    QPushButton *EmptyBasketButton = new QPushButton("Empty basket");
     QPushButton *ViewBasketButton = new QPushButton("View basket");
 
     QVBoxLayout* CountButtons = new QVBoxLayout;
@@ -72,6 +75,7 @@ public:
     void setFilter(string name, string type, int minPrice, int maxPrice);
     void groupProducts();
     void addProductToBasket();
+    void emptyBasket();
     void viewBasket();
     void addCountButtons();
     void removeCountButtons();
@@ -98,12 +102,13 @@ private:
     void filter();
 };
 
-class BasketWindow: public QWidget{
+class BasketWindow: public QWidget , public Observer{
 friend class GUI;
 private:
     Service &service;
 public:
-    BasketWindow(Service& service);
+    void update() override;
+    explicit BasketWindow(Service& service);
     QVBoxLayout* MainBox = new QVBoxLayout;
     QListWidget *BasketList;
     QPushButton *ExportCSVButton = new QPushButton("Export to CSV");
@@ -125,4 +130,19 @@ public:
     QLineEdit *Count;
     QPushButton *GenerateButton = new QPushButton("Generate");
     void generate();
+};
+
+//overide paintEvent to draw a image
+
+
+
+class BasketWindowReadOnly: public QWidget, public Observer, public QPainter{
+    friend class GUI;
+private:
+    Service &service;
+public:
+    void update() override;
+    explicit BasketWindowReadOnly(Service& service);
+    void paintEvent(QPaintEvent *event) override;
+    QVBoxLayout* MainBox = new QVBoxLayout;
 };

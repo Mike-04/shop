@@ -76,6 +76,7 @@ void GUI::initGUI() {
     RightPanel->addWidget(FilterButton);
     RightPanel->addWidget(GroupButton);
     RightPanel->addWidget(AddToBasketButton);
+    RightPanel->addWidget(EmptyBasketButton);
     RightPanel->addWidget(ViewBasketButton);
     RightPanel->addWidget(GenerateRandomBasketButton);
 
@@ -106,6 +107,7 @@ void GUI::connectSignals(){
     QObject::connect(AddToBasketButton, &QPushButton::clicked, this, &GUI::addProductToBasket);
     QObject::connect(ViewBasketButton, &QPushButton::clicked, this, &GUI::viewBasket);
     QObject::connect(GenerateRandomBasketButton, &QPushButton::clicked, this, &GUI::generateRandomBasket);
+    QObject::connect(EmptyBasketButton, &QPushButton::clicked, this, &GUI::emptyBasket);
 
 }
 
@@ -349,9 +351,15 @@ void GUI::addProductToBasket() {
     }
 }
 
+void GUI::emptyBasket() {
+    this->service.emptyBasket();
+}
+
 void GUI::viewBasket() {
     auto* basketWindow = new BasketWindow(this->service);
     basketWindow->show();
+    auto* basketWindowReadOnly = new BasketWindowReadOnly(this->service);
+    basketWindowReadOnly->show();
 }
 
 void GUI::generateRandomBasket() {
@@ -401,6 +409,7 @@ void FilterWindow::filter() {
 }
 
 BasketWindow::BasketWindow(Service& service) : service{service} {
+    service.addObserver(this);
     setLayout(MainBox);
     BasketList = new QListWidget{};
     MainBox->addWidget(BasketList);
@@ -438,6 +447,11 @@ void BasketWindow::exportToHTML() {
     this->service.exportBasketToHTML(filename);
 }
 
+void BasketWindow::update() {
+    BasketList->clear();
+    populateList();
+}
+
 
 GenerateRandomBasketWindow::GenerateRandomBasketWindow(Service& service) : service{service} {
     setLayout(MainBox);
@@ -453,4 +467,31 @@ void GenerateRandomBasketWindow::generate() {
     int n = Count->text().toInt();
     this->service.generateRandomBasket(n);
     close();
+}
+
+BasketWindowReadOnly::BasketWindowReadOnly(Service &service) : service(service) {
+    service.addObserver(this);
+    setLayout(MainBox);
+    //set the window size
+    setFixedSize(600, 600);
+
+}
+
+void BasketWindowReadOnly::paintEvent(QPaintEvent *event) {
+
+    QPainter painter(this);
+    painter.setPen(Qt::black);
+    for (auto &product : this->service.getBasket()) {
+        //draw a circle for each product at a random position
+        //get window size
+        int x = rand(0,this->width() - 100);
+        int y = rand(0,this->height() - 50);
+        painter.drawEllipse(x, y, 100, 50);
+        //draw the product name inside the circle
+        painter.drawText(x, y, 100, 50, Qt::AlignCenter, QString::fromStdString(product.getName()));
+    }
+}
+
+void BasketWindowReadOnly::update() {
+    repaint();
 }

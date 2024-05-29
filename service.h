@@ -16,9 +16,12 @@
 #include <iterator>
 #include <vector>
 #include "undo.h"
+#include "observer.h"
 using std::unique_ptr;
 
-class Service {
+int rand(int min,int max);
+
+class Service : public Observable{
 private:
     Repo& repo;
     std::vector<unique_ptr<UndoAction>> undoActions;
